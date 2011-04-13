@@ -1,0 +1,10 @@
+# .gitignore file.
+
+bin/
+obj/
+TestResults/
+_ReSharper*/
+
+*.suo
+*.user
+*.trx
