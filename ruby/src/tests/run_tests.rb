@@ -1,0 +1,8 @@
+require 'test/unit'
+require_relative 'memory_tests'
+require_relative 'zipenums_tests'
+require_relative 'zipdescriptor_tests'
+require_relative 'zipheader_tests'
+require_relative 'zipcentraldirectory_tests'
+require_relative 'zipend_tests'
+require_relative 'zipfile_tests'

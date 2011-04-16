@@ -1,6 +1,6 @@
-require "test/unit"
-require "date"
-require_relative "../zipfile"
+require 'test/unit'
+require 'date'
+require_relative '../zipfile'
 
 class TestZipFile < Test::Unit::TestCase
 
@@ -10,15 +10,6 @@ class TestZipFile < Test::Unit::TestCase
 		z = ZipFile.new(@@filename)
 		assert_not_nil(z)
 		assert_equal(@@filename, z.filename)
-	end
-
-	def test_read_headers
-		z = ZipFile.new(@@filename)
-		assert_not_nil(z)
-		z.read_file()
-		assert_equal(0x04034b50, z.headers[:header])
-		assert_not_nil(z.length)
-		z.close()
 	end
 
 	def test_unpack_date

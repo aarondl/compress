@@ -1,4 +1,2 @@
-Add extra field header reads
-Add combined date as a single return.
-Contemplate cleaning up headers with a structure include (since other
-	files will require this as well.)
+Get date objects going for returns instead of random garbage
+Implement the enums in some fashion
