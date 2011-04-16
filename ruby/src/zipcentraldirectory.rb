@@ -2,17 +2,26 @@ require_relative 'zipheader'
 
 # A struct containing the central directory header information.
 class ZipCentralDirectory
-	@@header_value = 0x02014b50
+	Header = 0x02014b50
+
+	# Creates a new ZipCentralDirectory from a stream.
+	#
+	# @param [Stream] The stream that contains the header.
+	def initialize(stream = nil)
+		if (stream != nil)
+			read_from_stream(stream)
+		end
+	end
 
 	# Reads in the central directory from a stream object.
 	#
 	# @param [Stream] The stream that contains the central directory.
 	# @return [ZipCentralDirectory] Self
 	def read_from_stream(stream)
-		headers = stream.read(6).unpack('Vv')
+		headers = stream.read(6).unpack('VCC')
 
-		@header = headers[0]
-		@version_made = headers[1]
+		@version_made_zip = headers[1]
+		@version_made_os = headers[2]
 
 		@zip_header = ZipHeader.new().read_from_stream(stream, false, false)
 
@@ -34,11 +43,12 @@ class ZipCentralDirectory
 	#
 	# @return [bool] Is valid?
 	def is_valid?
-		return @header == @@header_value
+		return @header == Header
 	end
 
 	attr_reader :header
-	attr_reader :version_made
+	attr_reader :version_made_zip
+	attr_reader :version_made_os
 	attr_reader :comment_len
 	attr_reader :disk_num
 	attr_reader :internal_attribs

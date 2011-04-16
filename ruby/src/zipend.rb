@@ -1,6 +1,15 @@
 # A struct containing the zip end of central directory header information.
 class ZipEnd
-	@@header_value = 0x06054b50
+	Header = 0x06054b50
+
+	# Creates a new ZipEnd from a stream.
+	#
+	# @param [Stream] The stream that contains the header.
+	def initialize(stream = nil)
+		if (stream != nil)
+			read_from_stream(stream)
+		end
+	end
 
 	# Reads in the end of central directory from a stream object.
 	#
@@ -27,7 +36,7 @@ class ZipEnd
 	#
 	# @return [bool] Is valid?
 	def is_valid?
-		return @header == @@header_value
+		return @header == Header
 	end
 
 	attr_reader :header

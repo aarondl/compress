@@ -1,8 +1,18 @@
 require_relative 'zipdescriptor'
+require_relative 'utility'
 
 # A struct containing the local file header information.
 class ZipHeader
-	@@header_value = 0x04034b50
+	Header = 0x04034b50
+
+	# Creates a new ZipHeader from a stream.
+	#
+	# @param [Stream] The stream that contains the header.
+	def initialize(stream = nil)
+		if (stream != nil)
+			read_from_stream(stream)
+		end
+	end
 
 	# Reads in the header from a stream object.
 	#
@@ -23,8 +33,9 @@ class ZipHeader
 		@version_needed = headers[n += 1]
 		@bitflag = headers[n += 1]
 		@compression_method = headers[n += 1]
-		@last_modified_time = headers[n += 1]
-		@last_modified_date = headers[n += 1]
+		time = Utility.unpack_time(headers[n += 1])
+		date = Utility.unpack_date(headers[n += 1])
+		@last_modified_date = Utility.combine_date_time(date, time)
 
 		@zip_descriptor = ZipDescriptor.new().read_from_stream(stream, false)
 
@@ -61,14 +72,13 @@ class ZipHeader
 	#
 	# @return [bool] Is valid?
 	def is_valid?
-		return @header == @@header_value
+		return @header == Header
 	end
 
 	attr_reader :header
 	attr_reader :version_needed
 	attr_reader :bitflag
 	attr_reader :compression_method
-	attr_reader :last_modified_time
 	attr_reader :last_modified_date
 	attr_reader :zip_descriptor
 	attr_reader :filename_len

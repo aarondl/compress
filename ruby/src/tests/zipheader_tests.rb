@@ -20,8 +20,15 @@ class TestZipHeader < Test::Unit::TestCase
 		assert_equal(20, z.version_needed)
 		assert_equal(0, z.bitflag)
 		assert_equal(0, z.compression_method)
-		assert_equal(39552, z.last_modified_time)
-		assert_equal(16013, z.last_modified_date)
+
+		# Verify date time
+		assert_equal(0, z.last_modified_date.second)
+		assert_equal(20, z.last_modified_date.minute)
+		assert_equal(3, z.last_modified_date.hour)
+		assert_equal(13, z.last_modified_date.day)
+		assert_equal(4, z.last_modified_date.month)
+		assert_equal(2011, z.last_modified_date.year)
+
 		assert_equal('262bcca8', z.zip_descriptor.crc)
 		assert_equal(14, z.zip_descriptor.compressed_size)
 		assert_equal(14, z.zip_descriptor.uncompressed_size)

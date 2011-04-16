@@ -1,6 +1,6 @@
 # A struct representing the data descriptor header.
 class ZipDescriptor
-	@@descriptor_value = 0x08074b50
+	Header = 0x08074b50
 
 	# Creates a ZipDescriptor for internal use, not read-in.
 	#
@@ -40,7 +40,7 @@ class ZipDescriptor
 	#
 	# @return [bool] Is valid?
 	def is_valid?
-		return @header == @@descriptor_value
+		return @header == Header
 	end
 
 	attr_reader :header

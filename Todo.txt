@@ -1,2 +1,2 @@
-Get date objects going for returns instead of random garbage
-Implement the enums in some fashion
+Read in all headers in a file
+Get rid of header reads from all the header types

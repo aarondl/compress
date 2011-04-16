@@ -1,4 +1,7 @@
-require 'date'
+require_relative 'zipdescriptor'
+require_relative 'zipheader'
+require_relative 'zipcentraldirectory'
+require_relative 'zipend'
 
 # Provides read-only access to zip files.
 class ZipFile
@@ -12,44 +15,12 @@ class ZipFile
 
 	# Reads the file in, this includes header info and directory structure.
 	#
-	# @return [nil]
+	# @return [ZipFile] Self
 	def read_file
 		open_file()
 		@length = @file.size
-		@headers = read_headers()
-	end
-
-	# Reads the headers from the file.
-	#
-	# @return [Hash] The header information.
-	def read_headers
-		if @file == nil
-			return @file
-		end
-
-		headers = @file.read(30).unpack('VvvvvvH2H2H2H2VVvv')
-
-		all_headers = {
-			:header => headers[0],
-			:version => headers[1],
-			:bitflag => headers[2],
-			:compression_method => headers[3],
-			:last_modified_time => headers[4],
-			:last_modified_date => headers[5],
-			:crc => headers[9] + headers[8] + headers[7] + headers[6],
-			:compressed_size => headers[10],
-			:uncompressed_size => headers[11],
-			:filename_len => headers[12],
-			:extra_field_len => headers[13],
-		}
-
-		name_length = all_headers[:filename_len];
-		if name_length > 0
-			all_headers[:filename] = 
-				@file.read(name_length).unpack('A' + name_length.to_s)[0]
-		end
-
-		return all_headers;
+		read()
+		self
 	end
 
 	# Closes the file
@@ -60,10 +31,38 @@ class ZipFile
 	end
 
 	attr_reader :filename
-	attr_reader :headers
 	attr_reader :length
+	attr_reader :local_headers
+	attr_reader :central_directories
+	attr_reader :central_directory_end
 
 	private	
+
+	# Reads the headers from the file.
+	#
+	# @return [Hash] The header information.
+	def read
+		@local_headers = []
+
+		
+
+		@central_directories = []
+
+		#@central_directory_end = ZipEnd.new(@file)
+	end
+
+	def get_next_header(bytes)
+		case bytes
+			when ZipHeader::Header
+				return ZipHeader.new(@file)
+			when ZipDescriptor::Header
+				return ZipDescriptor.new().read_from_stream(@file)
+			when ZipCentralDirectory::Header
+				return ZipCentralDirectory.new(@file)
+			when ZipEnd::Header
+				return ZipEnd.new(@file)
+		end
+	end
 
 	# Opens the file at a low level
 	#
@@ -79,40 +78,5 @@ class ZipFile
 		@file.close()
 	end
 
-	# Unpacks a 16-bit MS-DOS packed time value.
-	#
-	# @param [Packed_Time] The 16-bit MS-DOS packed time value.
-	# @return [DateTime] The date time object containing the time.
-	def ZipFile.unpack_time(packed_time)
-		return DateTime.civil(
-			0, 1, 1,
-			(packed_time >> 11) & 0xF, #Hour
-			(packed_time >> 5) & 0x1F, #Minute
-			(packed_time & 0xF) * 2, #Second Packed time has only 2s resolution
-		)
-	end
 
-	# Unpacks a 16-bit MS-DOS packed date value.
-	#
-	# @param [Packed_Date] The 16-bit MS-DOS packed date value.
-	# @return [Date] The date object containing the date.
-	def ZipFile.unpack_date(packed_date)
-		return Date.civil(
-			((packed_date >> 9) & 0x3F) + 1980, #Year
-			(packed_date >> 5) & 0x7, #Month
-			packed_date & 0xF, #Day
-		)
-	end
-
-	# Combines a date and time object.
-	#
-	# @param [Date] The date to combine.
-	# @param [Time] The time to combine.
-	# @return [DateTime] The full DateTime object.
-	def ZipFile.combine_date_time(date, time)
-		return DateTime.civil(
-			date.year, date.month, date.day,
-			time.hour, time.minute, time.second
-		)
-	end
 end
