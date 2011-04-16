@@ -77,28 +77,28 @@ class GeneralFlags
 		end
 	end
 
-	EncryptedFile = 0x1
-	CompressionOption = 0x2
-	CompressionOption2 = 0x4
-	DataDescriptor = 0x8
-	EnhancedDeflation = 0x10
-	CompressedPatchedData = 0x20
-	StrongEncryption = 0x40
-	LanguageEncoding = 0x80
-	Reserved = 0x100
-	MaskHeaderValues = 0x200
+	EncryptedFile = 0x0
+	CompressionOption = 0x1
+	CompressionOption2 = 0x2
+	DataDescriptor = 0x4
+	EnhancedDeflation = 0x8
+	CompressedPatchedData = 0x10
+	StrongEncryption = 0x20
+	LanguageEncoding = 0x40
+	Reserved = 0x80
+	MaskHeaderValues = 0x100
 		
 	@@stringtable = {
-		0x1 => 'Encrypted File',
-		0x2 => 'Compression Option',
-		0x4 => 'Compression Option2',
-		0x8 => 'Data Descriptor',
-		0x10 => 'Enhanced Deflation',
-		0x20 => 'Compressed Patched Data',
-		0x40 => 'Strong Encryption',
-		0x80 => 'Language Encoding',
-		0x100 => 'Reserved',
-		0x200 => 'Mask Header Values'
+		0x0 => 'Encrypted File',
+		0x1 => 'Compression Option',
+		0x2 => 'Compression Option2',
+		0x4 => 'Data Descriptor',
+		0x8 => 'Enhanced Deflation',
+		0x10 => 'Compressed Patched Data',
+		0x20 => 'Strong Encryption',
+		0x40 => 'Language Encoding',
+		0x80 => 'Reserved',
+		0x100 => 'Mask Header Values'
 	}
 end
 

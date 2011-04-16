@@ -5,27 +5,37 @@ class ZipEnd
 	# Creates a new ZipEnd from a stream.
 	#
 	# @param [Stream] The stream that contains the header.
-	def initialize(stream = nil)
+	# @param [Read_Header] Determines whether to read the initial header value
+	def initialize(stream = nil, read_header = true)
 		if (stream != nil)
-			read_from_stream(stream)
+			read_from_stream(stream, read_header)
 		end
 	end
 
 	# Reads in the end of central directory from a stream object.
 	#
 	# @param [Stream] The stream that contains the end of central directory.
+	# @param [Read_Header] Determines whether to read the initial header value
 	# @return [ZipEnd] Self
-	def read_from_stream(stream)
-		headers = stream.read(22).unpack('VvvvvVVv')
+	def read_from_stream(stream, read_header = true)
+		bytes = 18 + (read_header ? 4 : 0)
+		unpack = (read_header ? 'V' : '') + 'vvvvVVv';
+		headers = stream.read(bytes).unpack(unpack)
 
-		@header = headers[0]
-		@disk_num = headers[1]
-		@disk_cdir = headers[2]
-		@num_cdir = headers[3]
-		@total_cdir = headers[4]
-		@size_cdir = headers[5]
-		@offset_cdir = headers[6]
-		@comment_len = headers[7]
+		n = -1
+		if (read_header)
+			@header = headers[n += 1]
+		else
+			@header = false
+		end
+
+		@disk_num = headers[n += 1]
+		@disk_cdir = headers[n += 1]
+		@num_cdir = headers[n += 1]
+		@total_cdir = headers[n += 1]
+		@size_cdir = headers[n += 1]
+		@offset_cdir = headers[n += 1]
+		@comment_len = headers[n += 1]
 		
 		@comment = @comment_len > 0 ? stream.read(@comment_len) : nil
 
@@ -36,7 +46,7 @@ class ZipEnd
 	#
 	# @return [bool] Is valid?
 	def is_valid?
-		return @header == Header
+		return @header === false || @header === Header
 	end
 
 	attr_reader :header

@@ -27,7 +27,10 @@ class ZipDescriptor
 		if (read_header)
 			@header = headers[n]
 			n += 1
+		else
+			@header = false
 		end
+
 		@crc = headers[n + 3] + headers[n + 2] + headers[n + 1] + headers[n]
 		n += 4
 		@compressed_size = headers[n]
@@ -40,7 +43,7 @@ class ZipDescriptor
 	#
 	# @return [bool] Is valid?
 	def is_valid?
-		return @header == Header
+		return @header === false || @header === Header
 	end
 
 	attr_reader :header

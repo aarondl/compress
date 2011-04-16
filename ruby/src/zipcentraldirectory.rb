@@ -7,21 +7,32 @@ class ZipCentralDirectory
 	# Creates a new ZipCentralDirectory from a stream.
 	#
 	# @param [Stream] The stream that contains the header.
-	def initialize(stream = nil)
+	# @param [Read_Header] Whether or not to read the header.
+	def initialize(stream = nil, read_header = true)
 		if (stream != nil)
-			read_from_stream(stream)
+			read_from_stream(stream, read_header)
 		end
 	end
 
 	# Reads in the central directory from a stream object.
 	#
 	# @param [Stream] The stream that contains the central directory.
+	# @param [Read_Header] Whether or not to read the header.
 	# @return [ZipCentralDirectory] Self
-	def read_from_stream(stream)
-		headers = stream.read(6).unpack('VCC')
+	def read_from_stream(stream, read_header = true)
+		bytes = 2 + (read_header ? 4 : 0)
+		unpack = (read_header ? 'V' : '') + 'CC';
+		headers = stream.read(bytes).unpack(unpack)
 
-		@version_made_zip = headers[1]
-		@version_made_os = headers[2]
+		n = -1
+		if (read_header)
+			@header = headers[n += 1]
+		else
+			@header = false
+		end
+
+		@version_made_zip = headers[n += 1]
+		@version_made_os = headers[n += 1]
 
 		@zip_header = ZipHeader.new().read_from_stream(stream, false, false)
 
@@ -43,7 +54,7 @@ class ZipCentralDirectory
 	#
 	# @return [bool] Is valid?
 	def is_valid?
-		return @header == Header
+		return @header === false || @header === Header
 	end
 
 	attr_reader :header

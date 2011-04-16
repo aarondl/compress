@@ -1,2 +1,0 @@
-Read in all headers in a file
-Get rid of header reads from all the header types

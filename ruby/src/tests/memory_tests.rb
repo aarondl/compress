@@ -22,4 +22,22 @@ class TestMemoryFile < Test::Unit::TestCase
 		assert_equal('789', memfile.read())
 	end
 
+	def test_seek
+		memfile = MemoryFile.new(
+			[48, 49, 50, 51, 52, 53, 54, 55, 56, 57]
+		)
+
+		memfile.seek(7, IO::SEEK_CUR)
+		assert_equal('789', memfile.read())
+	end
+
+	def test_double_length_bug
+		memfile = MemoryFile.new(
+			[48, 49, 50, 51, 52, 53, 54, 55, 56, 57]
+		)
+
+		memfile.read(7)
+		memfile.read(1)
+		assert_equal(8, memfile.pos)
+	end
 end

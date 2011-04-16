@@ -13,8 +13,7 @@ class TestZipCentralDirectory < Test::Unit::TestCase
 			0x78,0x74
 		])
 
-		z = ZipCentralDirectory.new()
-		z.read_from_stream(memfile)
+		z = ZipCentralDirectory.new(memfile)
 		assert(z.is_valid?)
 
 		# Verify all local header information
