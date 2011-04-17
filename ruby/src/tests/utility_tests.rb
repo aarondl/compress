@@ -5,10 +5,10 @@ require_relative '../utility'
 class TestZipFile < Test::Unit::TestCase
 
 	def test_unpack_date
-		date = Utility.unpack_date(16013)
+		date = Utility.unpack_date(16016)
 		assert_equal(2011, date.year)
 		assert_equal(4, date.month)
-		assert_equal(13, date.day)
+		assert_equal(16, date.day)
 	end
 
 	def test_unpack_time

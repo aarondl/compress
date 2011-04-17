@@ -24,7 +24,7 @@ class TestZipHeader < Test::Unit::TestCase
 		# Verify date time
 		assert_equal(0, z.last_modified_date.second)
 		assert_equal(20, z.last_modified_date.minute)
-		assert_equal(3, z.last_modified_date.hour)
+		assert_equal(19, z.last_modified_date.hour)
 		assert_equal(13, z.last_modified_date.day)
 		assert_equal(4, z.last_modified_date.month)
 		assert_equal(2011, z.last_modified_date.year)

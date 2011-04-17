@@ -151,7 +151,7 @@ class ZipVersion
 		12 => 'VSE',
 		13 => 'Acorn Risc',
 		14 => 'VFAT',
-		15 => 'alternate MVS',
+		15 => 'Alternate MVS',
 		16 => 'BeOS',
 		17 => 'Tandem',
 		18 => 'OS/400',

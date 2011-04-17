@@ -9,9 +9,9 @@ class Utility
 	def self.unpack_time(packed_time)
 		return DateTime.civil(
 			0, 1, 1,
-			(packed_time >> 11) & 0xF, #Hour
-			(packed_time >> 5) & 0x1F, #Minute
-			(packed_time & 0xF) * 2, #Second Packed time has only 2s resolution
+			(packed_time >> 11) & 0x1F, #Hour
+			(packed_time >> 5) & 0x3F, #Minute
+			(packed_time & 0x1F) * 2, #Second Packed time has only 2s resolution
 		)
 	end
 
@@ -21,9 +21,9 @@ class Utility
 	# @return [Date] The date object containing the date.
 	def self.unpack_date(packed_date)
 		return Date.civil(
-			((packed_date >> 9) & 0x3F) + 1980, #Year
-			(packed_date >> 5) & 0x7, #Month
-			packed_date & 0xF, #Day
+			((packed_date >> 9) & 0x7F) + 1980, #Year
+			(packed_date >> 5) & 0xF, #Month
+			packed_date & 0x1F, #Day
 		)
 	end
 
