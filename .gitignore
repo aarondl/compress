@@ -3,6 +3,8 @@
 bin/
 obj/
 docs/
+doc/
+.yardoc/
 TestResults/
 _ReSharper*/
 

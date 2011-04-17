@@ -2,6 +2,7 @@ require_relative 'zipheader'
 
 # A struct containing the central directory header information.
 class ZipCentralDirectory
+	# The header at the beginning of the block.
 	Header = 0x02014b50
 
 	# Creates a new ZipCentralDirectory from a stream.

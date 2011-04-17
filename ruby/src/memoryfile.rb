@@ -2,10 +2,26 @@
 class MemoryFile
 
 	# Creates a Memory File with bytes inside it.
-	def initialize(bytes)
-		@bytes = bytes
-		@size = bytes.length
+	#
+	# @param [Bytes] Nil if empty, otherwise bytes that form this memfile.
+	def initialize(bytes = nil)
+		if (bytes != nil)
+			@bytes = bytes
+			@size = bytes.length
+		else
+			@bytes = []
+			@size = 0
+		end
 		@pos = 0
+	end
+
+	# Writes bytes to the object.
+	#
+	# @param [Bytes] A string to write.
+	def write(bytes)
+		@bytes.concat(bytes.unpack('C*'))
+		@size += bytes.length
+		@pos = @size
 	end
 
 	# Reads length bytes from the internal bytes.

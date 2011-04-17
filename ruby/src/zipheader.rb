@@ -4,7 +4,10 @@ require_relative 'zipenums'
 
 # A struct containing the local file header information.
 class ZipHeader
+	# The header at the beginning of the block.
 	Header = 0x04034b50
+	# The static length of the local file header.
+	StaticLength = 30
 
 	# Creates a new ZipHeader from a stream.
 	#

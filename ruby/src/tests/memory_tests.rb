@@ -40,4 +40,18 @@ class TestMemoryFile < Test::Unit::TestCase
 		memfile.read(1)
 		assert_equal(8, memfile.pos)
 	end
+
+	def test_write
+		memfile = MemoryFile.new()
+		assert_equal(memfile.pos, 0)
+		assert_equal(memfile.size, 0)
+		
+		str = 'here are some bytes'
+		memfile.write(str)
+		assert_equal(str.length, memfile.size)
+		assert_equal(memfile.size, memfile.pos)
+
+		memfile.seek(0, IO::SEEK_SET)
+		assert_equal(str, memfile.read())
+	end
 end

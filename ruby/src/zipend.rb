@@ -1,5 +1,6 @@
 # A struct containing the zip end of central directory header information.
 class ZipEnd
+	# The header at the beginning of the block.
 	Header = 0x06054b50
 
 	# Creates a new ZipEnd from a stream.

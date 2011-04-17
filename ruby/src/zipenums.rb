@@ -10,21 +10,37 @@ class CompressionMethod
 		end
 	end
 
+	# No compression
 	NoCompression = 0
+	# Shrunk
 	Shrunk = 1
+	# Reduced with Compression factor 1
 	ReducedCompFactor1 = 2
+	# Reduced with Compression factor 2
 	ReducedCompFactor2 = 3
+	# Reduced with Compression factor 3
 	ReducedCompFactor3 = 4
+	# Reduced with Compression factor 4
 	ReducedCompFactor4 = 5
+	# Imploded
 	Imploded = 6
+	# Reserved
 	Reserved = 7
+	# Deflated
 	Deflated = 8
+	# Enhanced Deflated
 	EnhancedDeflated = 9
+	# PKWare DCL Imploded
 	PKWareDCLImploded = 10
+	# BZIP2 Compression
 	CompressedUsingBZIP2 = 12
+	# LZMA Compression
 	LZMA = 14
+	# Compressed using IBM Terse
 	CompressedUsingIBMTERSE = 18
+	# IBM's LZ77 z
 	IBMLZ77z = 19
+	# PPMd version I, Rev 1
 	PPMd = 98
 
 	@@stringtable = {
@@ -77,15 +93,25 @@ class GeneralFlags
 		end
 	end
 
+	# The file is encrypted.
 	EncryptedFile = 0x0
+	# An option for compression agents.
 	CompressionOption = 0x1
+	# An option for compression agents.
 	CompressionOption2 = 0x2
+	# Whether or not the data descriptor block is present.
 	DataDescriptor = 0x4
+	# Using enhanced deflation
 	EnhancedDeflation = 0x8
+	# Compressed patched data
 	CompressedPatchedData = 0x10
+	# Using string encryption
 	StrongEncryption = 0x20
+	# Using language encoding
 	LanguageEncoding = 0x40
+	# Reserved
 	Reserved = 0x80
+	# Mask Header Values
 	MaskHeaderValues = 0x100
 		
 	@@stringtable = {
@@ -114,25 +140,45 @@ class ZipVersion
 		end
 	end
 
+	#MS-DOS and OS/2 (FAT / VFAT / FAT32 file systems)
 	MSDOS = 0
+	#Amiga
 	Amiga = 1
+	#OpenVMS
 	OpenVMS = 2
+	#UNIX
 	UNIX = 3
+	#VM/CMS
 	VMCMS = 4
+	#Atari ST
 	AtariST = 5
+	#OS/2 H.P.F.S.
 	OS2HPFS = 6
+	#Macintosh
 	Macintosh = 7
+	#Z-System
 	ZSystem = 8
+	#CP/M
 	CP_M = 9
+	#Windows NTFS
 	WindowsNTFS = 10
+	#MVS (OS/390 - Z/OS)
 	MVS = 11
+	#VSE
 	VSE = 12
+	#Acorn Risc
 	AcornRisc = 13
+	#VFAT
 	VFAT = 14
+	#Alternate MVS
 	AlternateMVS = 15
+	#BeOS
 	BeOS = 16
+	#Tandem
 	Tandem = 17
+	#OS/400
 	OS_400 = 18
+	#OS/X (Darwin)
 	OS_XDarwin = 19
 
 	@@stringtable = {
@@ -184,8 +230,11 @@ class InternalFileAttributes
 		end
 	end
 
+	# The file is apparently ASCII
 	ApparentASCII = 0x1
+	# Reserved
 	Reserved = 0x2
+	# Control Field Records Precede Logical Records
 	ControlFieldPrecedeRecords = 0x4
 
 	@@stringtable = {

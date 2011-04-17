@@ -30,6 +30,48 @@ class ZipFile
 		self
 	end
 
+	# Extracts the file and writes it to disk
+	#
+	# @param [Index] The index of the file to extract.
+	# @param [Filename] The filename to write to.
+	def extract_file(index, filename)
+		file = File.new(filename, 'w+')
+		extract_to_file(index, file)
+		file.close()
+	end
+
+	# Extracts the file and writes it to the file object.
+	#
+	# @param [Index] The index of the file to extract.
+	# @param [File] The file to write to.
+	def extract_to_file(index, file)
+		header = @central_directories[index]
+
+		file_offset =
+			header.local_header_offset +
+			header.zip_header.filename_len +
+			header.zip_header.extra_field_len +
+			ZipHeader::StaticLength
+		size = header.zip_header.zip_descriptor.compressed_size
+		comp_method = header.zip_header.compression_method
+
+		@file.seek(file_offset, IO::SEEK_SET)
+
+		if (comp_method == CompressionMethod::NoCompression)
+			size_left = size
+			n = [size_left, 4096].min
+			buffer = @file.read(n)
+			while (buffer != nil && buffer != '')
+				file.write(buffer)
+				size_left -= n
+				n = [size_left, 4096].min
+				buffer = @file.read(n)
+			end
+		elsif (comp_method == CompressionMethod::Deflated)
+			throw 'Cannot deal with compressed files... yet.'
+		end
+	end
+
 	# Closes the file
 	#
 	# @return [nil]

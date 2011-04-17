@@ -1,5 +1,6 @@
 # A struct representing the data descriptor header.
 class ZipDescriptor
+	# The header at the beginning of the block.
 	Header = 0x08074b50
 
 	# Creates a ZipDescriptor for internal use, not read-in.
