@@ -1,4 +1,4 @@
 # This class deflates a stream.
-class Deflate
+class DeflateStream
 
 end

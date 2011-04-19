@@ -1,16 +1,20 @@
-require_relative 'deflatealg'
+require_relative 'huffmancoding'
 
 # This class provides read-only access to a deflate stream.
-class Inflate
+class InflateStream
+	BufferSize = 32768
+
 	# Initializes the deflate stream.
 	def initialize(stream)
 		@stream = stream
+		@buffer = nil
+		@curbyte = nil
 	end
 
 	# Reads the blocks of the compressed file
 	#
 	# @param [Outstream] A stream to write the uncompressed data to.
-	def read_blocks(outstream)
+	def read(outstream)
 
 		# Read first byte
 		byte = @stream.read(1).ord
@@ -22,13 +26,13 @@ class Inflate
 			block_data = nil
 
 			case compression
-				when DeflateAlg::Uncompressed
+				when HuffmanCoding::Uncompressed
 					block_data = read_uncompressed_block()
-				when DeflateAlg::FixedHuffman
+				when HuffmanCoding::FixedHuffman
 					block_data = read_fixed_block(byte, 4)
-				when DeflateAlg::DynamicHuffman
+				when HuffmanCoding::DynamicHuffman
 					block_data = read_dynamic_block(byte, 4)
-				when DeflateAlg::Illegal
+				when HuffmanCoding::Illegal
 					throw 'Illegal Compression method'
 			end
 
@@ -63,7 +67,7 @@ class Inflate
 	# @return [String] The decompressed block data.
 	def read_huffman_block(tree, byte, offset)
 		if (tree == nil)
-			tree = DeflateAlg::FixedHuffman
+			tree = HuffmanCoding::FixedHuffman
 		end
 		throw 'Not implemented'
 	end

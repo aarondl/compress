@@ -1,7 +1,3 @@
 Provide method to do CRC checksums.
-Refactor Deflate/Inflate into DeflateStream and InflateStream.
-Rename all the files to be less stupid.
 Create lazy-loaded huffman fixed tree.
 Create InflateStream test for extraction using fixed tree.
-Combine DeflateAlg & HuffmanTree into HuffmanCoding or some such thing.
-Fix failing unit test for Inflate :(
