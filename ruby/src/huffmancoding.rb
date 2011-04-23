@@ -13,6 +13,19 @@ class HuffmanCoding
 
 	# The fixed huffman tree
 	@@fixed_tree = nil
+
+	#The lengths for each length code
+	@@lengths = { 257 => 3, 258 => 4, 259 => 5, 260 => 6, 261 => 7, 262 => 8, 
+		263 => 9, 264 => 10, 265 => 11, 266 => 13, 267 => 15, 268 => 17, 
+		269 => 19, 270 => 23, 271 => 27, 272 => 31, 273 => 35, 274 => 43, 
+		275 => 51, 276 => 59, 277 => 67, 278 => 83, 279 => 99, 280 => 115, 
+		281 => 131, 282 => 163, 283 => 195, 284 => 227, 285 => 258 }
+	#The distances for each distance code
+	@@distances = { 0 => 1, 1 => 2, 2 => 3, 3 => 4, 4 => 5, 5 => 7, 6 => 9,
+		7 => 13, 8 => 17, 9 => 25, 10 => 33, 11 => 49, 12 => 65, 13 => 97, 
+		14 => 129, 15 => 193, 16 => 257, 17 => 385, 18 => 513, 19 => 769, 
+		20 => 1025, 21 => 1537, 22 => 2049, 23 => 3073, 24 => 4097, 25 => 6145,
+		26 => 8193, 27 => 12289, 28 => 16385, 29 => 24577 }
 	
 	# Initializes the huffman tree.
 	def initialize
@@ -139,6 +152,14 @@ class HuffmanCoding
 		return (code - 265) / 4 + 1
 	end
 
+	# Gets the length for a given code.
+	#
+	# @param [Code] The code to calculate the length for.
+	# @return [Fixnum] The length value.
+	def self.get_length(code)
+		return @@lengths[code]
+	end
+
 	# Calculates the number of extra bits for a distance code.
 	#
 	# @param [Code] The code to calculate extra bits for.
@@ -149,6 +170,14 @@ class HuffmanCoding
 		end
 
 		return (code - 4) / 2 + 1
+	end
+
+	# Gets the distance for a given code.
+	#
+	# @param [Code] The code to calculate the distance for.
+	# @return [Fixnum] The length value.
+	def self.get_distance(code)
+		return @@distances[code]
 	end
 
 	# Generates codes based on the alphabet.

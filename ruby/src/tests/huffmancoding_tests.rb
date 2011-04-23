@@ -60,12 +60,25 @@ class TestHuffmanCoding < Test::Unit::TestCase
 		assert_equal(0, HuffmanCoding.length_extra_bits(285))
 	end
 
+	def test_get_length
+		assert_equal(3, HuffmanCoding.get_length(257))
+		assert_equal(4, HuffmanCoding.get_length(258))
+		assert_equal(227, HuffmanCoding.get_length(284))
+	end
+
 	def test_distance_extra_bits
 		assert_equal(0, HuffmanCoding.distance_extra_bits(2))
 		assert_equal(2, HuffmanCoding.distance_extra_bits(7))
 		assert_equal(7, HuffmanCoding.distance_extra_bits(17))
 		assert_equal(12, HuffmanCoding.distance_extra_bits(27))
 		assert_equal(13, HuffmanCoding.distance_extra_bits(28))
+	end
+
+	def test_get_distance
+		assert_equal(7, HuffmanCoding.get_distance(5))
+		assert_equal(1025, HuffmanCoding.get_distance(20))
+		assert_equal(8193, HuffmanCoding.get_distance(26))
+		assert_equal(12289, HuffmanCoding.get_distance(27))
 	end
 
 end

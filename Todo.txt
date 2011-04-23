@@ -1,3 +1,2 @@
 Provide method to do CRC checksums.
-Create lazy-loaded huffman fixed tree.
-Create InflateStream test for extraction using fixed tree.
+Tidy up the buffer writes in inflatestream, it's horrendous.

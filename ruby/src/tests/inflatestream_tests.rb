@@ -4,20 +4,35 @@ require_relative '../memoryfile'
 
 class TestInflateStream < Test::Unit::TestCase
 
-	def test_read
+	def setup
 		memfile = MemoryFile.new([
 			0x4B,0xCC,0x4F,0x4D,0x84,0xA0,0x54,0x00
 		])
 
-		outmemfile = MemoryFile.new()
+		@i = InflateStream.new(memfile)
+	end
 
-		i = InflateStream.new(memfile)
-		n = 1
-		while n > 0
-			n = i.read()
-		end
+	def test_read_fixed
+		assert_equal('aoeaoeaoeae', @i.read())
+	end
 
-		outmemfile.seek(0, IO::SEEK_SET)
-		assert_equal('aoeaoeaoeae', outmemfile.read())
+	def test_next_bit
+		expected = 0xCC4B
+		(0..15).each { |j|
+			assert_equal((expected >> j) & 0x1, @i.send(:next_bit))
+		}
+	end
+
+	def test_read_compression
+		@i.send(:next_bit)
+		assert_equal(1, @i.send(:read_compression))
+	end
+
+	def test_read_length
+		assert_equal(22, @i.send(:read_length, 269))
+	end
+
+	def test_read_distance
+		assert_equal(11875, @i.send(:read_distance))
 	end
 end
