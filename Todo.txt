@@ -1,2 +1,2 @@
 Provide method to do CRC checksums.
-Tidy up the buffer writes in inflatestream, it's horrendous.
+Write test to bring in a huffman tree (are the length/distance codes fixed?)
