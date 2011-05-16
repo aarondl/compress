@@ -68,7 +68,7 @@ class ZipFile
 				buffer = @file.read(n)
 			end
 		elsif (comp_method == CompressionMethod::Deflated)
-			throw 'Cannot deal with compressed files... yet.'
+			file.write(@file.read(10))
 		end
 	end
 

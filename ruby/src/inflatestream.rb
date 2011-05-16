@@ -71,7 +71,10 @@ class InflateStream
 				when HuffmanCoding::FixedHuffman
 					read_huffman_block()
 				when HuffmanCoding::DynamicHuffman
-					read_huffman_block(read_tree())
+					if (@tree == nil)
+						read_tree()
+					end
+					read_huffman_block(@tree)
 				else
 					throw 'Illegal compression method'
 			end
@@ -140,7 +143,8 @@ class InflateStream
 	# Reads a huffman coding tree in from the stream.
 	#
 	def read_tree
-		throw 'Not implemented'
+		@tree = HuffmanCoding.new()
+		@tree.read_tree(@stream, @byte, @bit)
 	end
 
 	# Reads the data encoded by a huffman tree.
@@ -157,6 +161,8 @@ class InflateStream
 			while (nextvalue = tree.query(next_bit())) == nil
 			end
 
+			puts "Byte #{nextvalue}"
+
 			if nextvalue < 256
 				@buffer += nextvalue.chr
 				@byteswritten += 1
@@ -164,10 +170,11 @@ class InflateStream
 					@userbuffer.concat(nextvalue.chr)
 				end
 			elsif nextvalue == 256
+				@tree = nil
 				@compression = 0x3
 				break
 			else
-				write_repeat(read_length(nextvalue), read_distance())
+				write_repeat(read_length(nextvalue, tree), read_distance(tree))
 			end
 		end
 
@@ -208,9 +215,10 @@ class InflateStream
 	# Reads in a full length code.
 	#
 	# @param [Value] The discovered length code.
+	# @param [Tree] The huffman tree to get the length from.
 	# @return [Fixnum] The actual length.
-	def read_length(value)
-		extrabits = HuffmanCoding.length_extra_bits(value)
+	def read_length(value, tree)
+		extrabits = HuffmanCoding::length_extra_bits(value)
 		extra = 0
 		if extrabits > 0
 			(0..extrabits-1).each { |i|
@@ -218,18 +226,19 @@ class InflateStream
 			}
 		end
 
-		return HuffmanCoding.get_length(value) + extra
+		return HuffmanCoding::get_length(value) + extra
 	end
 
 	# Reads in a full distance code.
 	#
+	# @param [Tree] The huffman tree to get the distance from.
 	# @return [Fixnum] The actual distance.
-	def read_distance()
+	def read_distance(tree)
 		distance_code = 0
 		(0..4).each { |i|
 			distance_code |= next_bit() << (4-i)
 		}
-		extrabits = HuffmanCoding.distance_extra_bits(distance_code)
+		extrabits = HuffmanCoding::distance_extra_bits(distance_code)
 		extra = 0
 		if extrabits > 0
 			(0..extrabits-1).each { |i|
@@ -237,6 +246,6 @@ class InflateStream
 			}
 		end
 
-		return HuffmanCoding.get_distance(distance_code) + extra
+		return HuffmanCoding::get_distance(distance_code) + extra
 	end
 end

@@ -1,2 +1,4 @@
 Provide method to do CRC checksums.
-Write test to bring in a huffman tree (are the length/distance codes fixed?)
+Fix broken tree read.
+Remove debug information.
+Fix dynamic read in zipfile
