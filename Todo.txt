@@ -1,4 +1,2 @@
 Provide method to do CRC checksums.
-Fix broken tree read.
-Remove debug information.
-Fix dynamic read in zipfile
+Replace the real tree-node structure with bit flag mechanisms.

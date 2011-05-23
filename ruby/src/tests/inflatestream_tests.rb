@@ -19,8 +19,7 @@ class TestInflateStream < Test::Unit::TestCase
 	def test_read_dynamic
 		memfile = MemoryFile.new(@@compressed)
 		@i = InflateStream.new(memfile)
-		stuff = @i.read(100)
-		assert_not_nil(stuff)
+		assert_equal(@@uncompressed, @i.read())
 	end
 
 	def test_read_with_lengths
@@ -64,11 +63,11 @@ class TestInflateStream < Test::Unit::TestCase
 	end
 
 	def test_read_length
-		assert_equal(22, @i.send(:read_length, 269, HuffmanCoding::fixed_tree))
+		assert_equal(22, @i.send(:read_length, 269))
 	end
 
 	def test_read_distance
-		assert_equal(11875, @i.send(:read_distance, HuffmanCoding::fixed_tree))
+		assert_equal(11875, @i.send(:read_distance))
 	end
 
 	@@compressed = [0x8D, 0x57, 0x5B, 0xAE, 0xDB, 0x36, 0x10, 0xFD, 0x2F, 0x90,
@@ -199,4 +198,62 @@ class TestInflateStream < Test::Unit::TestCase
 	0x7D, 0x11, 0xB3, 0xA5, 0x2E, 0x46, 0xB2, 0x17, 0xF5, 0x2E, 0xEA, 0xBE,
 	0xA1, 0x11, 0xAA, 0x79, 0xE3, 0xD2, 0x97, 0x50, 0xD5, 0xC3, 0xFA, 0x8F,
 	0xC2, 0x56, 0x9F, 0x2A, 0xBD, 0xD7, 0xA2, 0x01, 0x6E, 0xFF, 0x03]
+
+	@@uncompressed = "Lorem ipsum dolor sit amet, consectetur adipiscing elit" +
+	". Maecenas a augue eget quam placerat tristique nec ac libero. Phasellus" +
+	" eget tortor orci. Donec blandit odio vel arcu blandit suscipit. Nullam " +
+	"non justo justo. Integer eu lectus et eros sodales consectetur. In hac h" +
+	"abitasse platea dictumst. Nam non urna et justo dapibus tempus non eget " +
+	"quam. In hac habitasse platea dictumst. Pellentesque accumsan rhoncus ur" +
+	"na id lobortis. Ut sed iaculis tortor. Sed id nibh placerat orci tincidu" +
+	"nt porttitor. Nulla facilisi. Vivamus a orci venenatis justo suscipit al" +
+	"iquam. Pellentesque sagittis libero ac augue hendrerit luctus. Pellentes" +
+	"que nunc mauris, gravida eget semper eu, egestas mollis leo. Sed id eros" +
+	" et augue dapibus pretium sit amet at mauris. Pellentesque venenatis con" +
+	"sectetur tempus.\r\n\r\nQuisque in erat nec enim consequat adipiscing. E" +
+	"tiam imperdiet elit ac justo sollicitudin lobortis. Donec vel aliquet qu" +
+	"am. Etiam gravida ultricies quam sed suscipit. Aliquam quis justo at lib" +
+	"ero dignissim consequat. Ut placerat egestas euismod. Sed ut justo nisi." +
+	" Aliquam lobortis rhoncus arcu ac accumsan. Donec convallis blandit vulp" +
+	"utate. Nullam scelerisque mattis venenatis. Ut viverra ultricies quam, i" +
+	"d dictum metus sodales quis. Integer id nisi non mauris imperdiet posuer" +
+	"e a a est. Aenean tempus sapien ac quam placerat sed suscipit eros moles" +
+	"tie. Integer viverra, ipsum a ullamcorper tempus, mauris ligula elementu" +
+	"m eros, vel sagittis mauris erat quis purus. Suspendisse suscipit, eros " +
+	"et gravida lobortis, ipsum urna fringilla purus, vel pellentesque erat s" +
+	"apien sed nibh. Sed sem elit, suscipit a bibendum et, ultricies sed mi. " +
+	"Aliquam a mauris eu nisl luctus imperdiet ac vel nunc. Aenean scelerisqu" +
+	"e massa in nibh hendrerit ornare. Proin tempor pulvinar neque, eu volutp" +
+	"at quam iaculis eu. Mauris lacinia aliquet ornare.\r\n\r\nPhasellus adip" +
+	"iscing enim et nisl rhoncus laoreet. Aliquam erat volutpat. Praesent a e" +
+	"gestas dolor. Phasellus varius pellentesque diam eu tincidunt. Duis eget" +
+	" fermentum neque. Nam aliquet ante eget sapien suscipit sed malesuada pu" +
+	"rus imperdiet. Fusce eget mi felis. Ut interdum facilisis tellus, at pha" +
+	"retra leo mattis sit amet. In hac habitasse platea dictumst. Vivamus mi " +
+	"lorem, aliquam eget pulvinar eget, consectetur sit amet purus. Aliquam a" +
+	" ornare quam. Nulla eleifend, dolor ac interdum gravida, dui purus tinci" +
+	"dunt tellus, ut ullamcorper tortor lacus at risus. Vestibulum lobortis c" +
+	"onsequat justo non pulvinar. Nulla vehicula felis et ipsum malesuada feu" +
+	"giat. Etiam risus urna, aliquam eget dignissim quis, tincidunt nec orci." +
+	" Cras lacinia, risus vel tempor dapibus, felis tortor vestibulum felis, " +
+	"non vehicula arcu purus quis elit. Maecenas vestibulum felis sit amet ni" +
+	"bh tempor faucibus.\r\n\r\nSuspendisse bibendum vehicula nibh, quis accu" +
+	"msan risus sodales non. Mauris sagittis ullamcorper nisi, eu dignissim n" +
+	"ibh varius vitae. Pellentesque pharetra feugiat mollis. Nunc placerat co" +
+	"ngue mattis. Pellentesque nec est velit, nec facilisis lacus. Etiam ligu" +
+	"la purus, viverra vestibulum blandit id, consequat vel arcu. Morbi lacin" +
+	"ia, purus vel rutrum ullamcorper, lorem est convallis est, quis imperdie" +
+	"t est mi a eros. In eget massa quam, in mattis lacus. Cum sociis natoque" +
+	" penatibus et magnis dis parturient montes, nascetur ridiculus mus. Prae" +
+	"sent est leo, fringilla nec hendrerit vitae, mollis in eros. Vestibulum " +
+	"sit amet mi eget leo rutrum luctus at eu arcu. Sed enim mauris, pulvinar" +
+	" non molestie sit amet, porttitor et lacus. Duis ut tellus et turpis vol" +
+	"utpat condimentum.\r\n\r\nIn fringilla felis eu justo rutrum sagittis. N" +
+	"am vitae ligula vestibulum sapien sollicitudin ornare in ut lorem. Etiam" +
+	" sodales rhoncus egestas. Phasellus purus justo, pharetra id volutpat qu" +
+	"is, elementum nec nibh. Proin vestibulum commodo lorem, eget cursus dolo" +
+	"r bibendum at. Sed ligula ligula, pretium eget eleifend ac, pretium vita" +
+	"e tortor. Vestibulum iaculis pellentesque felis in scelerisque. Quisque " +
+	"eu magna felis, ac ultrices sem. Etiam lacinia iaculis urna, in pellente" +
+	"sque risus rhoncus ut. Sed blandit eleifend ultrices."
 end

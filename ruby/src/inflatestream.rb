@@ -74,7 +74,7 @@ class InflateStream
 					if (@tree == nil)
 						read_tree()
 					end
-					read_huffman_block(@tree)
+					read_huffman_block()
 				else
 					throw 'Illegal compression method'
 			end
@@ -143,25 +143,21 @@ class InflateStream
 	# Reads a huffman coding tree in from the stream.
 	#
 	def read_tree
-		@tree = HuffmanCoding.new()
-		@tree.read_tree(@stream, @byte, @bit)
+		@tree, @distance_tree, @byte, @bit =
+			HuffmanCoding::read_trees(@stream, @byte, @bit)
 	end
 
 	# Reads the data encoded by a huffman tree.
 	#
 	# @param [Tree] The huffman tree structure to use to decode.
-	def read_huffman_block(tree = nil)
-		if (tree == nil)
-			tree = HuffmanCoding::fixed_tree()
-		end
+	def read_huffman_block()
+		tree = @tree || HuffmanCoding::fixed_tree()
 		
 		while @byteswritten != @length
 			tree.begin_find()
 			nextvalue = nil
 			while (nextvalue = tree.query(next_bit())) == nil
 			end
-
-			puts "Byte #{nextvalue}"
 
 			if nextvalue < 256
 				@buffer += nextvalue.chr
@@ -171,10 +167,11 @@ class InflateStream
 				end
 			elsif nextvalue == 256
 				@tree = nil
+				@distance_tree = nil
 				@compression = 0x3
 				break
 			else
-				write_repeat(read_length(nextvalue, tree), read_distance(tree))
+				write_repeat(read_length(nextvalue), read_distance())
 			end
 		end
 
@@ -215,9 +212,8 @@ class InflateStream
 	# Reads in a full length code.
 	#
 	# @param [Value] The discovered length code.
-	# @param [Tree] The huffman tree to get the length from.
 	# @return [Fixnum] The actual length.
-	def read_length(value, tree)
+	def read_length(value)
 		extrabits = HuffmanCoding::length_extra_bits(value)
 		extra = 0
 		if extrabits > 0
@@ -233,11 +229,18 @@ class InflateStream
 	#
 	# @param [Tree] The huffman tree to get the distance from.
 	# @return [Fixnum] The actual distance.
-	def read_distance(tree)
+	def read_distance(tree = nil)
 		distance_code = 0
-		(0..4).each { |i|
-			distance_code |= next_bit() << (4-i)
-		}
+
+		if @distance_tree != nil
+			@distance_tree.begin_find()
+			while (distance_code = @distance_tree.query(next_bit())) == nil
+			end
+		else
+			(0..4).each { |i|
+				distance_code |= next_bit() << (4-i)
+			}
+		end
 		extrabits = HuffmanCoding::distance_extra_bits(distance_code)
 		extra = 0
 		if extrabits > 0

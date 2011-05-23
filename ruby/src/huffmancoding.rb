@@ -147,7 +147,7 @@ class HuffmanCoding
 	# Reads a tree in from a stream
 	#
 	# @param [Stream] An IO to read from.
-	def read_tree(stream, byte = nil, bitoffset = 8)
+	def self.read_trees(stream, byte = nil, bitoffset = 8)
 		offset = bitoffset
 		bit = nil
 		next_bit = lambda {
@@ -177,31 +177,34 @@ class HuffmanCoding
 		ndistances += 1
 		ncodelengths += 4
 
-		puts nliterals, ndistances, ncodelengths
+		codelengthtree = 
+			HuffmanCoding::create_dynamic_length_tree(ncodelengths, next_bit)
 
-		codelengthtree = create_dynamic_length_tree(ncodelengths, next_bit)
-
-		lengths = 
-			consume_code_length_codes(nliterals + ndistances,
+		lengths_and_distances = 
+			HuffmanCoding::consume_code_length_codes(nliterals + ndistances,
 				codelengthtree, get_int, next_bit)
 
-		puts lengths.inspect
-
+		lengths = lengths_and_distances[0...nliterals]
 		codes = HuffmanCoding.generate_codes(lengths)
 
-		for i in 0...nliterals
-			if (codes[i] != nil && codes[i] != 0)
-				puts "LENGTH Value: #{i} Code: #{codes[i]} Length: #{lengths[i]}"
-				add(i, codes[i], lengths[i])
+		length_tree = HuffmanCoding.new()
+		lengths.each_index { |i|
+			if (lengths[i] != nil && lengths[i] != 0)
+				length_tree.add(i, codes[i], lengths[i])
 			end
-		end
+		}
 
-		for i in nliterals...ndistances
-			if (codes[i] != nil && codes[i] != 0)
-				puts "DISTANCE Value: #{i} Code: #{codes[i]} Length: #{lengths[i]}"
-				add(i, codes[i], lengths[i])
+		distances = lengths_and_distances[nliterals...(nliterals+ndistances)]
+		codes = HuffmanCoding.generate_codes(distances)
+
+		distance_tree = HuffmanCoding.new()
+		distances.each_index { |i|
+			if (distances[i] != nil && distances[i] != 0)
+				distance_tree.add(i, codes[i], distances[i])
 			end
-		end
+		}
+
+		return length_tree, distance_tree, byte, offset
 	end
 
 	# Creates the huffman coding tree that stores the codes for the lengths
@@ -210,7 +213,7 @@ class HuffmanCoding
 	# @param [ncodelengths] The number of code lengths to read.
 	# @param [Get_Int] Lambda that allows getting the next n-bit int.
 	# @return [HuffmanCoding] A huffman coding tree with the code lengths.
-	def create_dynamic_length_tree(ncodelengths, next_bit)
+	def self.create_dynamic_length_tree(ncodelengths, next_bit)
 		lengthcodelengths = []
 		lengthlookup = {}
 		(ncodelengths).times { |j|
@@ -236,14 +239,6 @@ class HuffmanCoding
 			for j in 0..lengthcodes.length
 				if !used[j] && lengthcodelengths[j] == len
 					codelengthtree.add(i, lengthcodes[j], len)
-					print "Value: #{i} "
-					str = ''
-					lengthcodelengths[j].times {
-						|z|
-						str += ((lengthcodes[j] >> z) & 0x1).to_s
-					}
-					print "Code: #{str} "
-					puts "Length: #{len}"
 					used[j] = true
 					break
 				end
@@ -259,7 +254,7 @@ class HuffmanCoding
 	# @param [Tree] The HuffmanCoding tree with the codes inside it.
 	# @param [Get_Int] Lambda that allows getting the next n-bit int.
 	# @param [Next_Bit] Lambda that allows getting the next bit.
-	def consume_code_length_codes(ncodes, tree, get_int, next_bit)
+	def self.consume_code_length_codes(ncodes, tree, get_int, next_bit)
 		lengths = []
 		while lengths.length < ncodes
 			tree.begin_find()
@@ -276,11 +271,9 @@ class HuffmanCoding
 	# @param [Code_length_code] The code length code
 	# @param [Code_lengths] The code length array.
 	# @param [Get_Int] Lambda that allows getting the next n-bit int.
-	def translate_code_length_code(code_length_code, code_lengths, get_int)
-		print "#{code_lengths.length}\t"
+	def self.translate_code_length_code(code_length_code, code_lengths, get_int)
 		if code_length_code < 16
 			code_lengths.push(code_length_code)
-			puts "Lit: #{code_length_code}"
 			return
 		end
 
@@ -292,18 +285,14 @@ class HuffmanCoding
 		if code_length_code == 16
 			length = code_lengths[code_lengths.length-1]
 			length_bits = 2
-			print "Copying #{code_lengths[code_lengths.length-1]} 3-6: "
 		elsif code_length_code == 17
 			length_bits = 3
-			print "Copying 0 3-10: "
 		elsif code_length_code == 18
 			length_bits = 7
 			push = 11
-			print "Copying 0 11-138: "
 		end
 
 		ncopy = push + get_int.call(length_bits)
-		puts ncopy
 
 		ncopy.times { code_lengths.push(length) }
 	end
@@ -374,8 +363,6 @@ class HuffmanCoding
 			length_counts[len] = lengths.count(len)
 		}
 		length_counts.collect! { |i| i == nil ? 0 : i }
-
-		puts length_counts.inspect
 
 		# Step 2, generate next_code values for all lengths.
 		code = 0
