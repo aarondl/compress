@@ -3,6 +3,7 @@ require_relative 'zipheader'
 require_relative 'zipcentraldirectory'
 require_relative 'zipend'
 require_relative 'zipenums'
+require_relative 'inflatestream'
 
 # Provides read-only access to zip files.
 class ZipFile
@@ -38,6 +39,7 @@ class ZipFile
 		file = File.new(filename, 'w+')
 		extract_to_file(index, file)
 		file.close()
+		self
 	end
 
 	# Extracts the file and writes it to the file object.
@@ -68,7 +70,13 @@ class ZipFile
 				buffer = @file.read(n)
 			end
 		elsif (comp_method == CompressionMethod::Deflated)
-			file.write(@file.read(10))
+			compressed = InflateStream.new(@file)
+			buffer = ''
+			while compressed.read(4096, buffer) == 4096
+				file.write(buffer)
+				buffer = ''
+			end
+			file.write(buffer)
 		end
 	end
 
